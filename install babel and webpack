@@ -1,0 +1,58 @@
+install babel and webpack
+npm install babel-cli babel-core babel-preset-es2015 --save-dev 
+babel-cli - інтерфейс командної стрічки 
+babel-core - основний модуль 
+babel-loader: Интерфейс між Babel и Webpack
+babel babel-preset-es2015 - модуль для перетворення ES6 
+--save-dev - добавить bable в package.json (devDependencies)
+У файлі package.json:
+
+(якщо запускати через сам babel)
+"scripts": {
+    	"build": "babel src -d dist --preset es2015",
+"watch": "babel src -d dist --presets es2015 -w"
+  }
+	src - звідки зчитувати
+	-d dist - куди записувати 
+--preset es2015 - трансляція коду ES6
+	
+(якщо з допомогою webpack)
+npm install --save-dev webpack webpack-cli webpack-dev-server
+створити файл webpack.config.js
+
+const path = require('path');
+
+module.exports = {
+    devtool: "source-map", //для того щоб в консолі посилалось на основний файл до компіляції
+    entry: './src/index.js', //звідки взяти
+    output: { //куди положити
+        path: path.join(__dirname, 'build'), //адрес директорії куди ложити
+        filename: 'bundle.js', // назва файлу
+        publicPath: '/build/' // публічні файли (стлі, картинки...)
+    },
+    module: {
+        rules: [
+            {
+                test: '/\.js/', //розширення файла (регулярка)
+                use: [
+                    {
+                        loader: "babel-loader",
+                        options: {
+                            presets: ['env']
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+};
+У файлі package.json:
+
+"scripts": {
+    "dev": "webpack --config webpack.config.js",
+    "watch": "webpack-dev-server --inline --hot"
+}
+--inline  - оновлює все
+--hot - оновлює тільки змінені участки коду
+
+npm install express --save
